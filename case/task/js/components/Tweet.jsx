@@ -1,10 +1,8 @@
 var React = require('react');
+var Flag = require('./Flag');
 
 module.exports = React.createClass({
     render: function() {
-      // TODO: Refactor this
-      var countryCodeClass = 'tweet-flag flag-icon flag-icon-' + this.props.tweet.place.country_code.toLowerCase();
-
       return (
         <div className="tweet">
           <div className="tweet-header">
@@ -20,7 +18,7 @@ module.exports = React.createClass({
                   <span className="tweet-stats-desc">followers</span>
               </span>
           </div>
-          <span className={countryCodeClass}></span>
+          <Flag countryCode={this.props.tweet.place.country_code} />
           <span className="tweet-country tweet-stats-desc">{this.props.tweet.place.country}</span>
           <div className="tweet-city tweet-stats-desc">{this.props.tweet.place.full_name}</div>
         </div>
