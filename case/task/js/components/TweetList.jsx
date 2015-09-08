@@ -7,7 +7,7 @@ module.exports = React.createClass({
       return (
         <ul className="tweetList">
           {this.props.tweets.map(function(tweet){
-            return <Tweet tweet={tweet} />;
+            return <Tweet key={tweet.id} tweet={tweet} />;
           })}
         </ul>
       );
