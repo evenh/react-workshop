@@ -2,13 +2,14 @@ var _ = require('lodash');
 var React = require('react');
 
 var TweetList = require('./TweetList');
+var TweetMap = require('./TweetMap');
 
 module.exports = React.createClass({
   getInitialState: function(){
     return { tweets: [] };
   },
   fetchNLatest: function(number, inputList) {
-    return inputList.slice(Math.max(inputList.length - number, 1))
+    return inputList.slice(Math.max(inputList.length - number, 1));
   },
   componentDidMount: function() {
     var ws = new WebSocket('ws://10.15.9.37:9999');
@@ -29,6 +30,7 @@ module.exports = React.createClass({
 
     return <div>
     <h1>Dashboard</h1>
+    <TweetMap tweets={this.state.tweets} />
     {tweets}
     </div>
   }
