@@ -4,10 +4,11 @@ var React = require('react');
 var TweetList = require('./TweetList');
 var TweetMap = require('./TweetMap');
 var CurrentTweet = require('./CurrentTweet');
+var Header = require('./Header');
 
 module.exports = React.createClass({
   getInitialState: function(){
-    return { tweets: [], selectedTweet: null };
+    return { tweets: [], selectedTweet: null, numberCaptured: 0 };
   },
   getThreeMostInfluential: function(inputList) {
     return inputList
@@ -24,7 +25,7 @@ module.exports = React.createClass({
       if(tweetList.length === 100) tweetList.splice(0, 1);
       tweetList.push(JSON.parse(ms.data));
 
-      this.setState({ tweets: tweetList });
+      this.setState({ tweets: tweetList, numberCaptured: ++this.state.numberCaptured });
     }.bind(this);
   },
   selectTweet: function(tweet, marker){
@@ -43,8 +44,8 @@ module.exports = React.createClass({
     }
 
     return <div>
-    <h1>Dashboard</h1>
     <TweetMap tweets={this.state.tweets} selectTweet={this.selectTweet} selectedTweet={this.state.selectedTweet} />
+    <Header numberCaptured={this.state.numberCaptured} />
     {tweets}
     {currentTweet}
     </div>
