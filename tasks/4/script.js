@@ -19,3 +19,40 @@ var libraries = [
     { name: 'Koa', url: 'http://koajs.com/'},
 ];
 
+var Search = React.createClass({
+  getInitialState: function() {
+    return {value: ''};
+  },
+  handleChange: function(event) {
+    this.setState({value: event.target.value});
+  },
+  filterArray: function(items, query){
+    return items.filter(function(item){
+      var re = new RegExp(query, 'gi');
+      return (item.name.match(re) === null ? false : true);
+    });
+  },
+  componentDidMount: function() {
+    React.findDOMNode(this.refs.query).focus();
+  },
+  render: function() {
+    return (
+      <div>
+        <input type="text" ref="query" name="query" value={this.state.value} autocomplete="off" onChange={this.handleChange} />
+        <ul>
+            { this.filterArray(this.props.items, this.state.value)
+              .map(function(library){
+                return <li><a href={library.url}> {library.name}</a></li>;
+              })
+            }
+        </ul>
+      </div>
+    );
+  }
+});
+
+// Render!
+React.render(
+  <Search items={libraries} />,
+  document.body
+);
