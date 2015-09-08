@@ -3,7 +3,7 @@ var Tweet = require('./Tweet');
 
 module.exports = React.createClass({
     shouldComponentUpdate: function(nextProps, nextState) {
-      return nextProps.id !== this.props.id;
+      return nextProps.tweet.id != this.props.tweet.id;
     },
     render: function() {
       return (

@@ -6,7 +6,7 @@ module.exports = React.createClass({
     return (
       <ul className="countrylist">
       {this.props.stats.map(function(country){
-        return <li>
+        return <li key={country.countryCode}>
           <Flag countryCode={country.countryCode} />
           <span className="country-tweet-count">{country.count}</span>
         </li>
