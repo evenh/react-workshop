@@ -5,10 +5,11 @@ var TweetList = require('./TweetList');
 var TweetMap = require('./TweetMap');
 var CurrentTweet = require('./CurrentTweet');
 var Header = require('./Header');
+var CountryList = require('./CountryList');
 
 module.exports = React.createClass({
   getInitialState: function(){
-    return { tweets: [], selectedTweet: null, numberCaptured: 0 };
+    return { tweets: [], selectedTweet: null, numberCaptured: 0, countryStats: [] };
   },
   getThreeMostInfluential: function(inputList) {
     return inputList
@@ -21,12 +22,45 @@ module.exports = React.createClass({
     var ws = new WebSocket('ws://10.15.9.37:9999');
     ws.onmessage = function(ms) {
       var tweetList = this.state.tweets;
+      var countryStats = this.state.countryStats;
 
+      var tweet = JSON.parse(ms.data);
+
+      // Push to tweet list
       if(tweetList.length === 100) tweetList.splice(0, 1);
-      tweetList.push(JSON.parse(ms.data));
+      tweetList.push(tweet);
 
-      this.setState({ tweets: tweetList, numberCaptured: ++this.state.numberCaptured });
+      // Handle country stats
+      if(countryStats[tweet.place.country_code] === undefined){
+        countryStats[tweet.place.country_code] = 1;
+      } else {
+        countryStats[tweet.place.country_code]++;
+      }
+
+      var found = false;
+
+      countryStats.forEach(function(country){
+        if(country !== undefined && country.countryCode === tweet.place.country_code){
+          found = true;
+          country.count++;
+        }
+      });
+
+      if(!found){
+        var country = { countryCode: tweet.place.country_code, count: 1 };
+        countryStats.push(country);
+      }
+
+      countryStats = _.sortBy(countryStats, 'count').reverse();
+
+      this.setState({ tweets: tweetList, numberCaptured: ++this.state.numberCaptured, countryStats: countryStats });
     }.bind(this);
+  },
+  getTopCountries: function() {
+    var countries = this.state.countryStats;
+    var sliced = countries.slice(0, 22);
+
+    return sliced;
   },
   selectTweet: function(tweet, marker){
     this.setState({ selectedTweet: tweet });
@@ -46,6 +80,7 @@ module.exports = React.createClass({
     return <div>
     <TweetMap tweets={this.state.tweets} selectTweet={this.selectTweet} selectedTweet={this.state.selectedTweet} />
     <Header numberCaptured={this.state.numberCaptured} />
+    <CountryList stats={this.getTopCountries()} />
     {tweets}
     {currentTweet}
     </div>
