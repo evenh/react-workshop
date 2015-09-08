@@ -3,10 +3,11 @@ var React = require('react');
 
 var TweetList = require('./TweetList');
 var TweetMap = require('./TweetMap');
+var CurrentTweet = require('./CurrentTweet');
 
 module.exports = React.createClass({
   getInitialState: function(){
-    return { tweets: [] };
+    return { tweets: [], selectedTweet: null };
   },
   getThreeMostInfluential: function(inputList) {
     return inputList
@@ -26,16 +27,26 @@ module.exports = React.createClass({
       this.setState({ tweets: tweetList });
     }.bind(this);
   },
+  selectTweet: function(tweet, marker){
+    this.setState({ selectedTweet: tweet });
+  },
   render: function() {
     var tweets = null;
+    var currentTweet = null;
+
     if (this.state.tweets !== []) {
       tweets = <TweetList tweets={this.getThreeMostInfluential(this.state.tweets)} />;
     }
 
+    if (this.state.selectedTweet !== null) {
+      currentTweet = <CurrentTweet tweet={this.state.selectedTweet} />;
+    }
+
     return <div>
     <h1>Dashboard</h1>
-    <TweetMap tweets={this.state.tweets} />
+    <TweetMap tweets={this.state.tweets} selectTweet={this.selectTweet} selectedTweet={this.state.selectedTweet} />
     {tweets}
+    {currentTweet}
     </div>
   }
 
