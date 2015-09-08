@@ -8,8 +8,12 @@ module.exports = React.createClass({
   getInitialState: function(){
     return { tweets: [] };
   },
-  fetchNLatest: function(number, inputList) {
-    return inputList.slice(Math.max(inputList.length - number, 1));
+  getThreeMostInfluential: function(inputList) {
+    return inputList
+      .sort(function(a, b){
+        return b.user.followers_count - a.user.followers_count;
+      })
+      .slice(0, 3);
   },
   componentDidMount: function() {
     var ws = new WebSocket('ws://10.15.9.37:9999');
@@ -25,7 +29,7 @@ module.exports = React.createClass({
   render: function() {
     var tweets = null;
     if (this.state.tweets !== []) {
-      tweets = <TweetList tweets={this.fetchNLatest(3, this.state.tweets)} />;
+      tweets = <TweetList tweets={this.getThreeMostInfluential(this.state.tweets)} />;
     }
 
     return <div>
