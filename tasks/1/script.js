@@ -1,3 +1,8 @@
 /*
-    Exercise 1 
+    Exercise 1
 */
+
+React.render(
+  <h1>Hello, world!</h1>,
+  document.body
+);
